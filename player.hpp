@@ -25,16 +25,16 @@ class Player {
         vector<thread> evaluatorThreads;
 
         // For storing plays
-        vector<deque<shared_ptr<Space>>> turnSequences;
+        vector<vector<deque<shared_ptr<Space>>>> turnSequences;
     public:
         Player(Board& gameBoard, COLOR playerColor) : board(gameBoard), color(playerColor) {}
         void playTurn();
 
     private:
-        deque<shared_ptr<Space>> evaluate();
-        deque<shared_ptr<Space>> analyze();
+		vector<deque<shared_ptr<Space>>> evaluate();
+        vector<deque<shared_ptr<Space>>> analyze();
         void cleanupEvaluators();
-        void play(deque<shared_ptr<Space>>& sequence);
+        void play(vector<deque<shared_ptr<Space>>>& sequence);
 
         int getRandomTieBreaker(int min, int max) {
             random_device rng;

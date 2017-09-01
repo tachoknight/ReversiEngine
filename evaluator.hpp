@@ -22,7 +22,7 @@ class Evaluator {
             shared_ptr<Space> validSpace;
             DIRECTION direction;
 
-            EvaluatableSpace(shared_ptr<Space> validSpace, DIRECTION direction) {
+            EvaluatableSpace(const shared_ptr<Space>& validSpace, DIRECTION direction) {
                 this->validSpace = validSpace;
                 this->direction = direction;
             }
@@ -45,7 +45,7 @@ class Evaluator {
             return validSequences.size();
         }
 
-        vector<deque<shared_ptr<Space>>> getValidSequences() {
+        vector<deque<shared_ptr<Space>>>& getValidSequences() {
             return this->validSequences;
         }
     private:

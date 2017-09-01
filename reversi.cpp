@@ -7,7 +7,10 @@ int main(int argc, char* argv[]) {
 
     Game game;
     game.play();
-    game.showWinner();
+       
+	cout << "========================================\n";
+	game.showMoves();
+	game.showWinner();
 
     return 0;
 }

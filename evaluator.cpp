@@ -2,8 +2,6 @@
 
 void Evaluator::evaluate(ROW row, COLUMN column) {
     auto threadID = std::this_thread::get_id();
-    cout << "Thread " << threadID << " is going to evaluate "
-         << getBoardPositionDescription(row, column) << "\n";
     this->baseSpace = board.getSpace(row, column);
 
     // We have to get all the valid playable positions around us. Empty spaces
@@ -14,8 +12,6 @@ void Evaluator::evaluate(ROW row, COLUMN column) {
 
         if (std::get<0>(offset)) {
             if (std::get<1>(offset)->hasDisc()) {
-                cout << "We will check out " << std::get<1>(offset)->getDescription()
-                     << "\n";
                 validSpaces.push_back(EvaluatableSpace(std::get<1>(offset), pos));
             }
         }
@@ -27,17 +23,11 @@ void Evaluator::evaluate(ROW row, COLUMN column) {
 
 // Find all the valid sequences we can play on for each of the valid spaces
 void Evaluator::findValidSequences() {
-    cout << "=== START Finding Valid Sequences ===\n";
-
     // for each of the valid spaces we can possibly play on (i.e. there is a disc,
     // not a space)...
     for_each(
         this->validSpaces.begin(), this->validSpaces.end(),
     [this](EvaluatableSpace space) {
-        cout << "Okay, let's see if we can start at "
-             << space.validSpace->getDescription() << " and go "
-             << getDirectionDescription(space.direction) << " to find a play\n";
-
         // First thing we have to do is check whether the current space we're
         // evaluating is the
         // opposite color or not. If it is *not* the opposite color, then we
@@ -46,10 +36,7 @@ void Evaluator::findValidSequences() {
 
         if (std::get<0>(startSpaceColor) == true &&
                 std::get<1>(startSpaceColor) == true) {
-            // There is a disc here, but it's ours, so we can't play on it
-            cout << space.validSpace->getDescription() << " is the same color as "
-                 << getColor(this->evaluatorColor)
-                 << " so we can't go this way.\n";
+            // There is a disc here, but it's ours, so we can't play on it        
         }
         else {
             //
@@ -83,32 +70,22 @@ void Evaluator::findValidSequences() {
 
             // Now keep going until we find some kind of end
             while (foundEnd == false) {
-                cout << "Looking at "
-                     << getBoardPositionDescription(std::get<1>(nextPos),
-                                                    std::get<2>(nextPos))
-                     << "\n";
-
                 //
                 // Test 1:
                 // Are we at an invalid position (i.e. off the board?)
                 //
                 if (std::get<0>(nextPos) == false) {
-                    cout << "Walked off the board, so we're done.\n";
                     // yes, so we're done
                     foundEnd = true;
                     break;
                 }
-
-                cout << "Looking at space " << testSpace->getDescription() << "\n";
-
+                
                 //
                 // Test 2:
                 // Is there a disc here?
                 //
                 if (testSpace->hasDisc() == false) {
                     // Didn't find a disc, so we're done
-                    cout << "No disc at " << testSpace->getDescription()
-                         << " so we're done.\n";
                     foundEnd = true;
                     break;
                 }
@@ -122,8 +99,6 @@ void Evaluator::findValidSequences() {
                 //
                 if (testDisc->getColor() == this->evaluatorColor) {
                     // It's our color, so we're done
-                    cout << "Test disc is same color as us ("
-                         << getColor(this->evaluatorColor) << ") so we're done.\n";
                     // So we add this space to our vector as it will be the end
                     spaceSequence.push_back(testSpace);
 
@@ -136,9 +111,6 @@ void Evaluator::findValidSequences() {
                     break;
                 }
                 else {
-                    cout << "Test disc is opposite color as us ("
-                         << getColor(this->evaluatorColor)
-                         << ") so we're adding it.\n";
                     // It is their color, so we want to add it to the vector and keep
                     // going
                     spaceSequence.push_back(testSpace);
@@ -167,8 +139,6 @@ void Evaluator::findValidSequences() {
             }
 
             if (okayToAdd) {
-                cout << "Adding this sequence to the list of sequences...\n";
-
                 // And put the space we were evaluating at the top, so that it will
                 // be set as well
                 spaceSequence.push_front(this->getEvaluatedSpace());
@@ -178,11 +148,6 @@ void Evaluator::findValidSequences() {
             }
         }
     });
-
-    cout << "We have " << this->validSequences.size()
-         << " sequences to evaluate.\n";
-
-    cout << "=== END Finding Valid Sequences ===\n";
 }
 
 // Returns a bool that the space is valid, and the space itself (if bool is

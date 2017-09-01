@@ -1,9 +1,18 @@
 #include "game.hpp"
 
 void Game::play() {
+	int turnCount = 0;
     do {
         Player& currentPlayer = getCurrentPlayer();
-        currentPlayer.playTurn();
+        currentPlayer.playTurn();		
+		board.printBoard();
+		board.printScores();
+		// Check what the current stats are of the board
+		// and if one of the players has been wiped out,
+		// the game ends
+		if (board.isAnyPlayerWipedOut()) {
+			break;
+		}
         nextTurn();
     } while (board.boardFull() == false);
 }
@@ -49,7 +58,7 @@ void Game::showWinner() {
         winner = "DARK";
     }
     else {
-        winner = "TIE????";
+        winner = "TIE!!!";
     }
 
     cout << "\t**** " << winner << " HAS WON!! ****\n";
@@ -61,4 +70,16 @@ Player& Game::getCurrentPlayer() {
     }
 
     return this->dark;
+}
+
+void Game::showMoves() {
+	auto moves = this->board.getGameMoves();
+
+	int moveNum = 0;
+	for_each(moves.begin(), moves.end(), [&moveNum](vector<string> turn) {
+		cout << "***** TURN " << (++moveNum) << std::endl;
+		for_each(turn.begin(), turn.end(), [](string row) {
+			cout << "\t" << row << std::endl;
+		});
+	});
 }
