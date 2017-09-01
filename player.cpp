@@ -55,7 +55,20 @@ vector<deque<shared_ptr<Space>>> Player::analyze() {
 			int score = (int)testSeries.size();
 			int seqScore = 0;
 			for_each(testSeries.begin(), testSeries.end(), [&testSeries, &seqScore, this](deque<shared_ptr<Space>> testSequence) {
-				seqScore += (int)testSequence.size();
+                seqScore += (int)testSequence.size();
+                // Let's test for a possible corner position, which is one of the key spots
+                // in the game
+                for_each(testSequence.begin(), testSequence.end(), [&seqScore](shared_ptr<Space> space) {
+					if ((space->getColumn() == COLUMN::C_A && space->getRow() == ROW::R_1)
+						|| (space->getColumn() == COLUMN::C_H && space->getRow() == ROW::R_1)
+						|| (space->getColumn() == COLUMN::C_A && space->getRow() == ROW::R_8)
+						|| (space->getColumn() == COLUMN::C_H && space->getRow() == ROW::R_8))
+					{
+						// Ah, we can move to the corner, in which case we *really* want to
+						// do that!
+						seqScore *= 100;
+					}
+				});
 			});
             // So now we calculate the total; we give ten points for each of the
             // rows in the vector (i.e. we can play multiple moves), and then we
